@@ -131,10 +131,30 @@ router.get('/', async (req, res) => {
                 }
             });
 
-            if (!KnightBot.authState.creds.registered) {
-                await delay(3000); // Wait 3 seconds before requesting pairing code
-                num = num.replace(/[^\d+]/g, '');
-                if (num.startsWith('+')) num = num.substring(1);
+            let pairingRequested = false;
+
+KnightBot.ev.on('connection.update', async (update) => {
+    const { connection } = update;
+
+    if (connection === 'connecting' && !KnightBot.authState.creds.registered && !pairingRequested) {
+        pairingRequested = true;
+
+        try {
+            let code = await KnightBot.requestPairingCode(num);
+            code = code?.match(/.{1,4}/g)?.join('-') || code;
+
+            if (!res.headersSent) {
+                console.log('📲 Pairing code sent:', code);
+                res.send({ code });
+            }
+        } catch (err) {
+            console.error('❌ Pairing failed:', err);
+            if (!res.headersSent) {
+                res.status(503).send({ code: 'Failed to request pairing code' });
+            }
+        }
+    }
+});
 
                 try {
                     let code = await KnightBot.requestPairingCode(num);
