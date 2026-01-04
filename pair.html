@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hackex Bot - WhatsApp Linker</title>
+
+<!-- MATRIX FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<style>
+:root {
+  --primary-color: #00ff9c;
+  --secondary-color: #000;
+  --text-color: #eafff5;
+  --card-bg: rgba(0,0,0,0.85);
+  --border-color: rgba(0,255,156,0.35);
+  --hover-color: rgba(0,255,156,0.15);
+}
+
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* MATRIX CANVAS */
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+/* BODY */
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  color: var(--text-color);
+}
+.typing-text {
+  font-size: 13px;
+  color: #00ff9c;
+  margin-bottom: 18px;
+  height: 18px;
+  text-shadow: 0 0 8px rgba(0,255,156,0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: "Courier New", monospace; /* Matrix feel */
+}
+/* CONTAINER */
+.container {
+  width: 100%;
+  max-width: 450px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 25px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 30px rgba(0,255,156,0.35);
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* LOGO */
+.logo {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 0 20px rgba(0,255,156,0.7);
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* TITLES */
+.title {
+  font-family:'Orbitron',sans-serif;
+  font-size: 26px;
+  color: var(--primary-color);
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-bottom: 18px;
+}
+
+/* SOCIAL ICONS */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.social-icons a {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.youtube { background: #ff0000; }
+.telegram { background: #0088cc; }
+.whatsapp { background: #00c853; }
+.github { background: #333; }
+
+.social-icons a:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 15px rgba(0,255,156,0.5);
+}
+
+/* TOGGLE */
+.toggle-container {
+  display: flex;
+  background: var(--hover-color);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+}
+
+.toggle-option {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.toggle-option.active {
+  background: var(--primary-color);
+  color: #000;
+}
+
+/* INPUT */
+.input-label {
+  font-size: 12px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-color);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(0,255,156,0.4);
+}
+
+/* BUTTONS */
+.generate-btn,
+.copy-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--primary-color);
+  color: #000;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.generate-btn:hover,
+.copy-btn:hover {
+  box-shadow: 0 0 20px rgba(0,255,156,0.7);
+}
+
+/* CODE DISPLAY */
+.code-display {
+  margin-top: 15px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  text-align: center;
+  background: var(--hover-color);
+}
+
+/* QR */
+.qr-display {
+  display: none;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.qr-image {
+  max-width: 260px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,255,156,0.6);
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 11px;
+  opacity: 0.6;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">
+      <img src="default.png" alt="Hackex Bot">
+    </div>
+    <h1 class="title">HACKEX BOT</h1>
+    <p class="subtitle">Link your WhatsApp device</p>
+
+    <div class="social-icons">
+      <a class="tiktok" href="https://www.tiktok.com/@anonymousgh10?_r=1&_t=ZM-92mSniyYsGG"><i class="fab fa-tiktok"></i></a>
+      <a class="telegram" href="t.me/AnonymousGh1"><i class="fab fa-telegram-plane"></i></a>
+      <a class="whatsapp" href="https://wa.me/qr/77QWWLGLTJBLD1"><i class="fab fa-whatsapp"></i></a>
+      <a class="github" href="https://github.com/chrisniiemperor"><i class="fab fa-github"></i></a>
+    </div>
+  </div>
+
+  <div class="toggle-container">
+    <div class="toggle-option active"><i class="fas fa-key"></i> Pair</div>
+    <div class="toggle-option"><i class="fas fa-qrcode"></i> QR</div>
+  </div>
+
+  <label class="input-label">WhatsApp Number (+Country)</label>
+<input id="mobileNumber" class="input-field" placeholder="+233xxxxxxxxx">
+<button id="submit" class="generate-btn">
+    <i class="fas fa-key"></i> Generate Code
+  </button>
+
+<div id="codeDisplay" class="code-display">Your pair code will appear here</div>
+  <button class="copy-btn">
+    <i class="fas fa-copy"></i> Copy Code
+  </button>
+
+  <div class="footer">
+    © 2026 CHRIS-TECH ⛇☃︎ | HACKEX BOT
+  </div>
+  <p class="typing-text" id="typing"></p>
+</div>
+
+<script>
+/* MATRIX ANIMATION */
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix() {
+  ctx.fillStyle = "rgba(0,0,0,0.1)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#00ff9c";
+  ctx.font = fontSize + "px Share Tech Mono";
+
+  drops.forEach((y, i) => {
+    const text = letters[Math.floor(Math.random() * letters.length)];
+    ctx.fillText(text, i * fontSize, y * fontSize);
+    if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  });
+}
+
+setInterval(drawMatrix, 35);
+</script>
+<script>
+/* LOOPING MATRIX TYPING EFFECT */
+const typingEl = document.getElementById("typing");
+const text = "Created by Anonymous";
+
+let index = 0;
+let isDeleting = false;
+
+function typeLoop() {
+  if (!isDeleting) {
+    typingEl.textContent = text.slice(0, index + 1);
+    index++;
+
+    if (index === text.length) {
+      setTimeout(() => isDeleting = true, 1200);
+    }
+  } else {
+    typingEl.textContent = text.slice(0, index - 1);
+    index--;
+
+    if (index === 0) {
+      setTimeout(() => isDeleting = false, 600);
+    }
+  }
+
+  setTimeout(typeLoop, isDeleting ? 60 : 90);
+}
+
+typeLoop();
+</script>
+<body>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+<script>
+  // Elements
+  const submitBtn = document.getElementById("submit");
+  const numberInput = document.getElementById("mobileNumber");
+  const codeDisplay = document.getElementById("codeDisplay");
+  const copyBtn = document.querySelector(".copy-btn");
+
+  // Generate Pair Code
+  submitBtn.addEventListener("click", async () => {
+    const rawNumber = numberInput.value.trim();
+
+    if (!rawNumber) {
+      codeDisplay.innerHTML = "❌ Please enter your WhatsApp number";
+      return;
+    }
+
+    const cleanNumber = rawNumber.replace(/[^0-9]/g, "");
+    codeDisplay.innerHTML = "⏳ Generating pair code...";
+
+    try {
+      const res = await axios.get(`/pair?number=${cleanNumber}`);
+
+      if (!res.data || !res.data.code) {
+        codeDisplay.innerHTML = "❌ Service unavailable";
+        return;
+      }
+
+      codeDisplay.innerHTML = `✅ CODE: <b>${res.data.code}</b>`;
+    } catch (err) {
+      console.error(err);
+      codeDisplay.innerHTML = "❌ Server error or service sleeping";
+    }
+  });
+
+  // Copy Code
+  copyBtn.addEventListener("click", () => {
+    const text = codeDisplay.innerText;
+    if (!text.includes("CODE:")) return;
+
+    const code = text.replace("✅ CODE:", "").trim();
+    navigator.clipboard.writeText(code).then(() => {
+      const original = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => (copyBtn.innerHTML = original), 2000);
+    });
+  });
+</script>
+</body>
+</html>
+  
