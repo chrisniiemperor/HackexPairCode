@@ -82,16 +82,16 @@ router.get('/', async (req, res) => {
                         // Send video thumbnail with caption
                         await KnightBot.sendMessage(userJid, {
                             image: { url: 'https://img.youtube.com/vi/-oz_u1iMgf8/maxresdefault.jpg' },
-                            caption: `🎬 *Hackex-Bot MD V2.0 Full Setup Guide!*\n\n🚀 Bug Fixes + New Commands + Fast AI Chat\n📺 Watch Now: https://whatsapp.com/channel/0029Vb78V290gcfOcvVPzL2w`
+                            caption: `🎬 *HackexBot MD V2.0 Full Setup Guide!*\n\n🚀 Bug Fixes + New Commands + Fast AI Chat\n📺 Watch Now: https://youtu.be/`
                         });
                         console.log("🎬 Video guide sent successfully");
 
                         // Send warning message
                         await KnightBot.sendMessage(userJid, {
                             text: `⚠️Do not share this file with anybody⚠️\n 
-┌┤✑  Thanks for using Hackex-Bot
+┌┤✑  Thanks for using Hackex Bot
 │└────────────┈ ⳹        
-│©2026 Chris-Tech ✌︎㋡
+│©2026 CHRIS-TECH ✌︎㋡
 └─────────────────┈ ⳹\n\n`
                         });
                         console.log("⚠️ Warning message sent successfully");
@@ -131,30 +131,10 @@ router.get('/', async (req, res) => {
                 }
             });
 
-            let pairingRequested = false;
-
-KnightBot.ev.on('connection.update', async (update) => {
-    const { connection } = update;
-
-    if (connection === 'connecting' && !KnightBot.authState.creds.registered && !pairingRequested) {
-        pairingRequested = true;
-
-        try {
-            let code = await KnightBot.requestPairingCode(num);
-            code = code?.match(/.{1,4}/g)?.join('-') || code;
-
-            if (!res.headersSent) {
-                console.log('📲 Pairing code sent:', code);
-                res.send({ code });
-            }
-        } catch (err) {
-            console.error('❌ Pairing failed:', err);
-            if (!res.headersSent) {
-                res.status(503).send({ code: 'Failed to request pairing code' });
-            }
-        }
-    }
-});
+            if (!KnightBot.authState.creds.registered) {
+                await delay(3000); // Wait 3 seconds before requesting pairing code
+                num = num.replace(/[^\d+]/g, '');
+                if (num.startsWith('+')) num = num.substring(1);
 
                 try {
                     let code = await KnightBot.requestPairingCode(num);
