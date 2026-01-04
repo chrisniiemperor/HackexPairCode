@@ -82,7 +82,7 @@ router.get('/', async (req, res) => {
                         // Send video thumbnail with caption
                         await KnightBot.sendMessage(userJid, {
                             image: { url: 'https://img.youtube.com/vi/-oz_u1iMgf8/maxresdefault.jpg' },
-                            caption: `🎬 *HackexBot MD V2.0 Full Setup Guide!*\n\n🚀 Bug Fixes + New Commands + Fast AI Chat\n📺 Watch Now: https://youtu.be/NjOipI2AoMk`
+                            caption: `🎬 *HackexBot MD V2.0 Full Setup Guide!*\n\n🚀 Bug Fixes + New Commands + Fast AI Chat\n📺 Watch Now: https://youtu.be/`
                         });
                         console.log("🎬 Video guide sent successfully");
 
